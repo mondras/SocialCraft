@@ -32,6 +32,10 @@ function handler(request, response) {
         }
 
         try {
+        
+        //default
+        if(request.url == "/") request.url = "/index.html";
+                
         var pathname = url.parse(request.url).pathname.substring(1);
 
         if (pathname.indexOf('..') != -1) {
@@ -41,7 +45,7 @@ function handler(request, response) {
 
         path.exists(pathname, function(exists) {
             if (!exists) {
-            write(404, "cannot find that file\n");
+            write(404, "There ain't any file bitch\n");
             return;
             }
 
