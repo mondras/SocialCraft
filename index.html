@@ -446,7 +446,7 @@
 
                                 //  player
                                 var geometryPlayer = new THREE.CubeGeometry( 20, 20, 20 );
-				var material = new THREE.MeshLambertMaterial( { color: 0xffaaff, shading: THREE.FlatShading } );
+				var material = new THREE.MeshLambertMaterial( { color: 0xffaaff, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture( 'textures/envmap.png' ) } );
                                 
                                 player = new THREE.Mesh( geometryPlayer, material );
 				player.overdraw = true;
@@ -823,6 +823,8 @@
                                 player.position.x = camera.position.x + 50;
                                 player.position.y = camera.position.y;
                                 player.position.z = camera.position.z + 100;
+
+                                player.rotation.setRotationFromMatrix(camera.matrix);
 
 				renderer.render( scene, camera );
 
