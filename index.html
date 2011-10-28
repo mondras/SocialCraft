@@ -820,11 +820,56 @@
 
 				controls.update();
 
-                                player.position.x = camera.position.x + 50;
-                                player.position.y = camera.position.y;
-                                player.position.z = camera.position.z + 100;
 
-                                player.rotation.setRotationFromMatrix(camera.matrix);
+                var xOffset = 50;
+                var zOffset = 100;
+
+                //Base para calcular los deltas
+                if(!player.hasOwnProperty('oldPosition'))
+                {
+                    player.oldPosition = {
+                        x: camera.position.x + xOffset,
+                        y: camera.position.y,
+                        z: camera.position.z + zOffset
+                        }
+                }
+
+                if(!player.hasOwnProperty('oldRotation'))
+                {
+                    player.oldRotation = {
+                        x: camera.rotation.x,
+                        y: camera.rotation.y,
+                        z: camera.rotation.z
+                        }
+                }
+
+ 
+
+                player.position.x = camera.position.x + xOffset;
+                player.position.y = camera.position.y;
+                player.position.z = camera.position.z + zOffset;
+
+                player.rotation.setRotationFromMatrix(camera.matrix);
+
+
+                //Calculo de deltas
+                var dx = player.position.x - player.oldPosition.x;
+                var dy = player.position.y - player.oldPosition.y;
+                var dz = player.position.z - player.oldPosition.z;
+
+                var drx = player.rotation.x - player.oldRotation.x;
+                var dry = player.rotation.y - player.oldRotation.y;
+                var drz = player.rotation.z - player.oldRotation.z;
+
+                if(dx != 0 || dy != 0 || dz != 0 || drx != 0 || dry != 0 || drz != 0)
+                {
+                   sendPlayerMove(dx,dy,dz,drx,dry,drz);
+                }
+
+                //updateOldPositions
+                player.oldPosition.x = player.position.x;
+                player.oldPosition.y = player.position.y;
+                player.oldPosition.z = player.position.z;
 
 				renderer.render( scene, camera );
 

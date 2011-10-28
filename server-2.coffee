@@ -52,7 +52,6 @@ io.sockets.on "connection", (socket) ->
   catch error
     socket.emit "Greeting"
     console.log "nenememes, errror" + error
-
   socket.on "setNickname", (name) ->
     console.log "About to set nick to: " + name
     socket.set "nickname", name, ->
