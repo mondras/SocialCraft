@@ -70,9 +70,41 @@ function handler(request, response) {
         }
 }
 
+var players = [];
+
 io.sockets.on('connection', function (socket) {
-        socket.emit('news', { hello: 'world' });
-        socket.on('my other event', function (data) {
-            console.log(data);
-            });
+       
+        //Let know the client that the server is alive
+        try
+        {
+            socket.has('nickname') 
+        }
+        catch(error)
+        {
+            socket.emit('Greeting');
+            console.log("nenememes, errror"+error);
+        }
+       
+        socket.on('setNickname', function(name) {
+            console.log("About to set nick to: "+name);
+            socket.set('nickname',name,function() { socket.emit('ready'); });
+            console.log("nick SET!");
+            console.log(players);
+            console.log('dada');
+            players.push(name);
+
+
+            console.log("Player "+name+" successfully registered in player list");
+            console.log("Updated list:");
+            console.log(players);
+        });
+
+        //receive the new position
+        socket.on('move', function(coords) {
+            console.log("player is moving");
+            //store it
+            //socket.set(players[]);
+            //broadcast it
+        });
+       
         });
