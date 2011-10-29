@@ -17,6 +17,7 @@ handler = (request, response) ->
     if request.url.indexOf("fbpics") > 0 
         #write 200, "FBPICS BNI"
         console.log "Getting FB pic..."
+        console.log request.url
         parsed = url.parse request.url, true
 
         transfer = http.createClient 80, 'graph.facebook.com'
@@ -24,6 +25,7 @@ handler = (request, response) ->
         transfer_request.on 'response', (transfer_response) ->
             
             transfer_response.on 'end', (data) -> 
+                console.log "Tenemos acceso al archivo final"    
                 processed_response = url.parse transfer_response.headers.location
                 proxy = http.createClient 80, processed_response.host 
                 proxy_request = proxy.request 'GET', processed_response.pathname, {'host':processed_response.host}

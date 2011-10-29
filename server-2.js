@@ -21,6 +21,7 @@
     try {
       if (request.url.indexOf("fbpics") > 0) {
         console.log("Getting FB pic...");
+        console.log(request.url);
         parsed = url.parse(request.url, true);
         transfer = http.createClient(80, 'graph.facebook.com');
         transfer_request = transfer.request('GET', "/" + parsed.query.uid + "/picture", {
@@ -29,6 +30,7 @@
         transfer_request.on('response', function(transfer_response) {
           return transfer_response.on('end', function(data) {
             var processed_response, proxy, proxy_request;
+            console.log("Tenemos acceso al archivo final");
             processed_response = url.parse(transfer_response.headers.location);
             proxy = http.createClient(80, processed_response.host);
             proxy_request = proxy.request('GET', processed_response.pathname, {
