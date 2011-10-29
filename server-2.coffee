@@ -5,44 +5,40 @@ handler = (request, response) ->
     response.writeHead code, headers
     response.end body
     sys.print request.method + " " + request.url + " " + code + " " + (body or "").length + "\n"
+  facebook = (url) ->
+    console.log "voy a sacar::"
+    console.log url
+
+
+    #response.writeHead 200, {'host':'lulu'}
+    #response.end "LOL"
+    sys.print "Got photo :)"
   try
     if request.url.indexOf("fbpics") > 0 
         #write 200, "FBPICS BNI"
+        console.log "Getting FB pic..."
         parsed = url.parse request.url, true
-        console.log parsed.query.uid 
 
-        proxy = http.createClient 80, 'graph.facebook.com' 
-
-        proxy_request = proxy.request 'GET', "/"+parsed.query.uid+'/picture', {'host':'graph.facebook.com'}
-
-        proxy_request.addListener 'response', (proxy_response) ->
-            console.log "Recibimos datos del servidor medio"
-            parsed_inception = url.parse proxy_response.headers.location
-            console.log parsed_inception
-            console.log "looking for"+parsed_inception
+        transfer = http.createClient 80, 'graph.facebook.com'
+        transfer_request = transfer.request 'GET', "/"+parsed.query.uid+"/picture", {'host':'graph.facebook.com'} 
+        transfer_request.on 'response', (transfer_response) ->
             
-            inception_proxy = http.createClient 80, parsed_inception.host
-            inception_proxy_request = inception_proxy.request 'GET', parsed_inception.pathname, {'host':parsed_inception.host}
+            transfer_response.on 'end', (data) -> 
+                processed_response = url.parse transfer_response.headers.location
+                proxy = http.createClient 80, processed_response.host 
+                proxy_request = proxy.request 'GET', processed_response.pathname, {'host':processed_response.host}
+                
+                proxy_request.on 'response', (proxy_response) ->
+                     console.log "Recibimos datos del servidor medio"
+                     proxy_response.addListener 'data', (chunk) -> response.write chunk, 'binary'
+                     proxy_response.addListener 'end', -> response.end()
+                     response.writeHead proxy_response.statusCode, proxy_response.headers
 
-            console.log inception_proxy_request
+                proxy_request.write "LOL"
+                proxy_request.end
 
-            inception_proxy_request.addListener 'response', (inception_proxy_response) ->
-                console.log "REcibimos datos del servidor final"
-                inception_proxy_response.addListener 'data', (chunk) -> response.write chunk, 'binary'
-                inception_proxy_response.addListener 'end', -> response.end()
-                #write 200, "no mames"
-                proxy_response.writeHead inception_proxy_response.statusCode, inception_proxy_response.headers
-                response.writeHead proxy_response.statusCode, proxy_response.headers
-
-            proxy_request.addListener 'data', (chunk) -> 
-                inception_proxy_request.write chunk, 'binary'
-            proxy_request.addListener 'end', -> 
-                inception_proxy_request.end()
-
-        request.addListener 'data', (chunk) -> proxy_request.write chunk, 'binary'
-
-        request.addListener 'end', ->  proxy_request.end()
-
+        transfer_request.write "LOL"
+        transfer_request.end
 
     else
        request.url = "/index.html"  if request.url is "/"
