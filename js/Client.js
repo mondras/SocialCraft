@@ -30,18 +30,18 @@ socket.on('Greeting', function (data) {
         console.log("init-game");
         });
 
-socket.on('receiveMoves', function (data) {
-        //console.log("Someone moved!");
+socket.on('receiveMove', function (data) {
+       // console.log("Somseone moved!" + data.id);
         var objectPlayer = players[data.id];
         if (objectPlayer != null)
         {
-            objectPlayer.position.x += data.dx;
-            objectPlayer.position.y += data.dy;
-            objectPlayer.position.z += data.dz;
+            objectPlayer.position.x = data.dx;
+            objectPlayer.position.y = data.dy;
+            objectPlayer.position.z = data.dz;
 
-            objectPlayer.rotation.x += data.drx;
-            objectPlayer.rotation.y += data.dry;
-            objectPlayer.rotation.z += data.drz;
+            objectPlayer.rotation.x = data.drx;
+            objectPlayer.rotation.y = data.dry;
+            objectPlayer.rotation.z = data.drz;
         }
 });
 
