@@ -1,65 +1,78 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		<title>three.js webgl - geometry - minecraft - ao</title>
+		<title>SocialCraft</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
-		<style>
-			body {
-				color: #61443e;
-				font-family:Monospace;
-				font-size:13px;
-				text-align:center;
-
-				/* background-color: #bfd1e5; */
-				background-color: #ffffff;
-				margin: 0px;
-				overflow: hidden;
-			}
-
-			a {	color: #a06851;	}
-
-			#info {
-				position: absolute;
-				top: 0px; width: 100%;
-				padding: 5px;
-			}
-
-			#oldie {
-				background:rgb(100,0,0) !important;
-				color:#fff !important;
-				margin-top:10em !important;
-			}
-			#oldie a { color:#fff }
-
-
-			button { border:0; background:rgba(0,0,0,0.5); color:orange; cursor:pointer }
-			button:hover { color:gold }
-		</style>
+		
 	</head>
 	<body>
-
-		<div id="container"><br /><br /><br /><br /><br />Generating world...</div>
+        <div id="fb-root"></div>
+	    <div id="loginButton" class="fb-login-button">Login with Facebook</div>
+    	<div id="container"><br /><br /><br /><br /><br />Generating world...</div>
 		<div id="info">
 			<a href="http://github.com/mrdoob/three.js" target="_blank">three.js</a> - <a href="http://www.minecraft.net/" target="_blank">minecraft</a> demo [ambient occlusion]. featuring <a href="http://painterlypack.net/" target="_blank">painterly pack</a><br />(left click: forward, right click: backward)
 			<br/><br/>
 			<button id="bt">texture</button>
 			<button id="bao">ao</button>
 			<button id="baot">texture + ao</button>
-		</div>
+            </div>
+            <div align="center">
+            <img id="image"/>
+            <div id="name"></div>
+            </div>        
+        <script type="text/javascript">
+            var loginReady = false;
+            var uid = '';   
+            
+             window.fbAsyncInit = function() {
+                 FB.init({
+appId      : '183147551767552',
+status     : true, 
+cookie     : true,
+xfbml      : true
+});
+
+FB.api('/me', function(user) {
+        if (user) {
+        var image = document.getElementById('image');
+        image.src = 'http://graph.facebook.com/' + user.id + '/picture';
+        var name = document.getElementById('name');
+        name.innerHTML = user.name
+        uid = user.id;
+      
+        
+        var boton = document.getElementById('loginButton');
+        boton.style.visibility = "hidden";
+        loginReady = true;
+        startGame();      
+        registerPlayer();
+       
+        }
+        else
+        {
+            console.log("registrate perra");
+        }
+        });
+};
+(function(d){
+ var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
+ js = d.createElement('script'); js.id = id; js.async = true;
+ js.src = "//connect.facebook.net/en_US/all.js";
+ d.getElementsByTagName('head')[0].appendChild(js);
+ }(document));
+        </script>
 
 		<script src="js/Three.js"></script>
-
 		<script src="js/ImprovedNoise.js"></script>
-
 		<script src="js/Detector.js"></script>
 		<script src="js/RequestAnimationFrame.js"></script>
 		<script src="js/Stats.js"></script>
-                <script src="/socket.io/socket.io.js"></script>
-                <script src="js/Client.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/Client.js"></script>
 
 		<script>
-
+    
 			if ( ! Detector.webgl ) {
 
 				Detector.addGetWebGLMessage();
@@ -80,8 +93,11 @@
 			worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2,
 			data = generateHeight( worldWidth, worldDepth );
 
-			init();
-			animate();
+            function startGame()
+            {
+			    init();
+			    animate();
+            }
 
 			function init() {
 
@@ -446,7 +462,7 @@
 
                                 //  player
                                 var geometryPlayer = new THREE.CubeGeometry( 20, 20, 20 );
-				var material = new THREE.MeshLambertMaterial( { color: 0xffaaff, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture( 'http://localhost:8080/fbpics?uid=702152773' ) } );
+				var material = new THREE.MeshLambertMaterial( { color: 0xffaaff, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture( 'http://'+window.location.host+'/fbpics?uid='+uid ) } );
                                 
                                 player = new THREE.Mesh( geometryPlayer, material );
 				player.overdraw = true;

@@ -8,25 +8,32 @@ function sendPlayerMove(dx,dy,dz,drx,dry,drz)
     coords = {id: player.nickname, dx:dx, dy:dy, dz:dz, drx:drx, dry:dry,drz:drz};
     socket.emit('move',coords);
 }
+var serverReady = false;
+function registerPlayer()
+{ 
+        if(loginReady && loginReady)
+        {
+            console.log("Server is alive, displaying nickname box"); 
+           var nickname = "";
+            var newPlayer = {
+            name:uid,
+            x: player.position.x,
+            y: player.position.y,
+            z: player.position.z,
+            rx: player.rotation.x,
+            ry: player.rotation.y,
+            rz: player.rotation.z
+            };
+            console.log(newPlayer);
+            socket.emit('setNickname', newPlayer);
+            console.log("init-game");
+           }
+}
 
 //Server is ready
 socket.on('Greeting', function (data) {
-        console.log("Server is alive, displaying nickname box"); 
-        var nickname = "";
-        nickname = prompt("The server is alive, what's your name?");
-        var newPlayer = {
-        name:nickname,
-        x: player.position.x,
-        y: player.position.y,
-        z: player.position.z,
-        rx: player.rotation.x,
-        ry: player.rotation.y,
-        rz: player.rotation.z
-        };
-        console.log(newPlayer);
-        socket.emit('setNickname', newPlayer);
-        console.log("init-game");
-        });
+       serverReady = true;
+         });
 
 socket.on('receiveMoves', function (data) {
         console.log("Someone moved!");
