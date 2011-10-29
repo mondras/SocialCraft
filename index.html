@@ -58,6 +58,8 @@
                 <script src="/socket.io/socket.io.js"></script>
                 <script src="js/Client.js"></script>
 
+                <script src="fonts/helvetiker_regular.typeface.js"></script>
+
 		<script>
 
 			if ( ! Detector.webgl ) {
@@ -70,7 +72,7 @@
 			var fogExp2 = true;
 
 			var container, stats;
-                        var player;
+                        var player, textNamePlayers = [];
 
 			var camera, controls, scene, renderer;
 
@@ -825,6 +827,34 @@
                             var newPlayer = new THREE.Mesh( geometryPlayer, material );
                             newPlayer.overdraw = true;
 
+                            var text3d = new THREE.TextGeometry( data.id, {
+					size: 80,
+					height: 0,
+					curveSegments: 2,
+					font: "helvetiker"
+
+				});
+
+                            text3d.computeBoundingBox();
+                            var centerOffset = -0.5 * ( text3d.boundingBox.x[ 1 ] - text3d.boundingBox.x[ 0 ] );
+
+                            var textMaterial = new THREE.MeshBasicMaterial( { color: 0x000000, wireframe: false } );
+
+                            var text = new THREE.Mesh( text3d, textMaterial );
+
+                            text.doubleSided = false;
+
+                            text.position.x = centerOffset;
+                            text.position.y = 200;
+                            text.position.z = 180;
+
+                            text.rotation.x = 0;
+                            text.rotation.y = Math.PI * 2;
+                            
+                            text.overdraw = true;
+                            newPlayer.add(text);
+                            textNamePlayers.push(text);
+
                             newPlayer.position.x = data.x;
                             newPlayer.position.y = data.y;
                             newPlayer.position.z = data.z;
@@ -840,6 +870,10 @@
 			function render() {
 
 				controls.update();
+
+                /*textNamePlayers.forEach(function(text){
+
+                });*/
 
 
                 var xOffset = 50;

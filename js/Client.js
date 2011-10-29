@@ -45,8 +45,25 @@ socket.on('receiveMove', function (data) {
         }
 });
 
+socket.on('createExistingPlayers', function(data){
+        if(data.length > 0)
+        {
+            data.forEach(function(player) {
+                if (player.id != playerId && players[player.id] == null)
+                {
+                    console.log("Create existing player");
+                    console.log(player);
+                    players[player.id] = createPlayerOnMap(player);
+                }
+            });
+        }
+});
+
 socket.on('createNewPlayer', function(data) {
-        console.log("A new player has arrived!");
-        console.log(data);
-        players[data.id] = createPlayerOnMap(data);
+        if (players[data.id] == null)
+        {
+            console.log("A new player has arrived!");
+            console.log(data);
+            players[data.id] = createPlayerOnMap(data);
+        }
 });
