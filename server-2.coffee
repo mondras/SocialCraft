@@ -77,6 +77,8 @@ io.sockets.on "connection", (socket) ->
     players.forEach (p) ->
         console.log p.id if typeof p.id is "string"
     socket.broadcast.emit('createNewPlayer',player) 
+    socket.emit('createExistingPlayers',players)
+    
     console.log("Finished getting the player into the server");
     
          
@@ -84,10 +86,10 @@ io.sockets.on "connection", (socket) ->
     socket.broadcast.emit('receiveMove',coords) 
     players.forEach (player) ->
         if player.socket is socket.id
-            player.x    += coords.dx
-            player.y    += coords.dy
-            player.z    += coords.dz
-            player.rx   += coords.drx
-            player.rz   += coords.drz
-            player.ry   += coords.dry
+            player.x    = coords.dx
+            player.y    = coords.dy
+            player.z    = coords.dz
+            player.rx   = coords.drx
+            player.rz   = coords.drz
+            player.ry   = coords.dry
     #console.log "player is moving"
