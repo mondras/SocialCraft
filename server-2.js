@@ -108,7 +108,7 @@
         if (player.socket !== socket.id) {
           socket.broadcast.emit('receiveMove', coords);
         }
-        if (player.socket === socket) {
+        if (player.socket === socket.id) {
           player.x += coords.dx;
           player.y += coords.dy;
           player.z += coords.dz;

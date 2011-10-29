@@ -83,7 +83,7 @@ io.sockets.on "connection", (socket) ->
   socket.on "move", (coords) ->
     players.forEach (player) ->
         socket.broadcast.emit('receiveMove',coords) unless player.socket is socket.id
-        if player.socket is socket
+        if player.socket is socket.id
             player.x    += coords.dx
             player.y    += coords.dy
             player.z    += coords.dz
