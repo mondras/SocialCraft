@@ -445,7 +445,7 @@
 
 
                                 //  player
-                                var geometryPlayer = new THREE.CubeGeometry( 20, 20, 20 );
+                                var geometryPlayer = new THREE.CubeGeometry( 150, 150, 150 );
 				var material = new THREE.MeshLambertMaterial( { color: 0xffaaff, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture( 'textures/envmap.png' ) } );
                                 
                                 player = new THREE.Mesh( geometryPlayer, material );
@@ -815,6 +815,27 @@
 				stats.update();
 
 			}
+
+
+                        //Create player object
+                        function createPlayerOnMap(data) {
+                            var geometryPlayer = new THREE.CubeGeometry( 150, 150, 150 );
+                            var material = new THREE.MeshLambertMaterial( { color: 0xffaaff, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture( 'textures/envmap.png' ) } );
+
+                            var newPlayer = new THREE.Mesh( geometryPlayer, material );
+                            newPlayer.overdraw = true;
+
+                            newPlayer.position.x = data.x;
+                            newPlayer.position.y = data.y;
+                            newPlayer.position.z = data.z;
+
+                            newPlayer.rotation.x = data.rx;
+                            newPlayer.rotation.y = data.ry;
+                            newPlayer.rotation.z = data.rz;
+
+                            scene.add(newPlayer);
+                            return newPlayer;
+                        }
 
 			function render() {
 
