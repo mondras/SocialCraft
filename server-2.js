@@ -73,25 +73,49 @@
       socket.emit("Greeting");
       console.log("nenememes, errror" + error);
     }
-    socket.on("setNickname", function(name) {
+    socket.on("setNickname", function(data) {
       var player;
-      console.log("About to set nick to: " + name);
-      socket.set("nickname", name, function() {
+      console.log("About to set nick to: " + data.name);
+      socket.set("nickname", data.name, function() {
         return socket.emit("ready");
       });
-      console.log("nick SET!");
-      console.log(players);
-      console.log("dada");
       player = {
-        name: name
+        id: data.name,
+        socket: socket,
+        x: data.x,
+        y: data.y,
+        z: data.z,
+        rx: data.rx,
+        ry: data.ry,
+        rz: data.rz
       };
       players.push(player);
-      console.log("Player " + name + " successfully registered in player list");
+      console.log("Player " + player.id + " successfully registered in player list");
       console.log("Updated list:");
-      return console.log(players);
+      players.forEach(function(p) {
+        if (typeof p.id === "string") {
+          console.log(p.id);
+        }
+        if (p.socket !== socket) {
+          return p.socket.emit('CreateNewPlayer', player);
+        }
+      });
+      return console.log("Finished getting the player into the server");
     });
     return socket.on("move", function(coords) {
-      return console.log("player is moving");
+      return players.forEach(function(player) {
+        if (player.socket !== socket) {
+          player.socket.emit('receiveMove', coords);
+        }
+        if (player.socket === socket) {
+          player.x += coords.dx;
+          player.y += coords.dy;
+          player.z += coords.dz;
+          player.rx += coords.drx;
+          player.rz += coords.drz;
+          return player.ry += coords.dry;
+        }
+      });
     });
   });
 }).call(this);

@@ -52,19 +52,40 @@ io.sockets.on "connection", (socket) ->
   catch error
     socket.emit "Greeting"
     console.log "nenememes, errror" + error
-  socket.on "setNickname", (name) ->
-    console.log "About to set nick to: " + name
-    socket.set "nickname", name, ->
+ 
+  socket.on "setNickname", (data) ->
+    console.log "About to set nick to: " + data.name
+    socket.set "nickname", data.name, ->
       socket.emit "ready"
 
-    console.log "nick SET!"
-    console.log players
-    console.log "dada"
-    player = name: name
+    player = 
+        id: data.name
+        socket: socket
+        x: data.x
+        y: data.y
+        z: data.z
+        rx: data.rx
+        ry: data.ry
+        rz: data.rz
+        
     players.push player
-    console.log "Player " + name + " successfully registered in player list"
+    console.log "Player " + player.id + " successfully registered in player list"
     console.log "Updated list:"
-    console.log players
 
+    players.forEach (p) ->
+        console.log p.id if typeof p.id is "string"
+        p.socket.emit('CreateNewPlayer',player) unless p.socket is socket
+    console.log("Finished getting the player into the server");
+    
+         
   socket.on "move", (coords) ->
-    console.log "player is moving"
+    players.forEach (player) ->
+        player.socket.emit('receiveMove',coords) unless player.socket is socket
+        if player.socket is socket
+            player.x    += coords.dx
+            player.y    += coords.dy
+            player.z    += coords.dz
+            player.rx   += coords.drx
+            player.rz   += coords.drz
+            player.ry   += coords.dry
+    #console.log "player is moving"
