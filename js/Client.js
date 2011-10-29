@@ -1,9 +1,6 @@
 console.log("Loading client sockets...");
 
 var socket = io.connect('http://'+window.location.host);
-var player = {};
-player.nickname = "TROLLDAD";
-
 var players = [];
 
 function sendPlayerMove(dx,dy,dz,drx,dry,drz)
@@ -15,11 +12,19 @@ function sendPlayerMove(dx,dy,dz,drx,dry,drz)
 //Server is ready
 socket.on('Greeting', function (data) {
         console.log("Server is alive, displaying nickname box"); 
-        console.log(player);
-        var nickname = prompt("The server is alive, what's your name?");
-        socket.emit('setNickname', nickname);
-        player.nickname = nickname;
-        console.log("Sending nickname: " + player.nickname);
+        var nickname = "";
+        nickname = prompt("The server is alive, what's your name?");
+        var newPlayer = {
+        name:nickname,
+        x: player.position.x,
+        y: player.position.y,
+        z: player.position.z,
+        rx: player.rotation.x,
+        ry: player.rotation.y,
+        rz: player.rotation.z
+        };
+        console.log(newPlayer);
+        socket.emit('setNickname', newPlayer);
         console.log("init-game");
         });
 

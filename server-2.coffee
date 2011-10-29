@@ -46,6 +46,8 @@ contentTypeMap =
 
 app.listen 8080
 players = []
+
+io.set 'log level', 1
 io.sockets.on "connection", (socket) ->
   try
     socket.has "nickname"
@@ -60,7 +62,7 @@ io.sockets.on "connection", (socket) ->
 
     player = 
         id: data.name
-        socket: socket
+        socket: socket.id
         x: data.x
         y: data.y
         z: data.z
@@ -74,13 +76,13 @@ io.sockets.on "connection", (socket) ->
 
     players.forEach (p) ->
         console.log p.id if typeof p.id is "string"
-        p.socket.emit('CreateNewPlayer',player) unless p.socket is socket
+        socket.broadcast.emit('createNewPlayer',player) unless p.socket is socket.id
     console.log("Finished getting the player into the server");
     
          
   socket.on "move", (coords) ->
     players.forEach (player) ->
-        player.socket.emit('receiveMove',coords) unless player.socket is socket
+        socket.broadcast.emit('receiveMove',coords) unless player.socket is socket.id
         if player.socket is socket
             player.x    += coords.dx
             player.y    += coords.dy

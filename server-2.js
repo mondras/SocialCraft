@@ -66,6 +66,7 @@
   };
   app.listen(8080);
   players = [];
+  io.set('log level', 1);
   io.sockets.on("connection", function(socket) {
     try {
       socket.has("nickname");
@@ -81,7 +82,7 @@
       });
       player = {
         id: data.name,
-        socket: socket,
+        socket: socket.id,
         x: data.x,
         y: data.y,
         z: data.z,
@@ -96,16 +97,16 @@
         if (typeof p.id === "string") {
           console.log(p.id);
         }
-        if (p.socket !== socket) {
-          return p.socket.emit('CreateNewPlayer', player);
+        if (p.socket !== socket.id) {
+          return socket.broadcast.emit('createNewPlayer', player);
         }
       });
       return console.log("Finished getting the player into the server");
     });
     return socket.on("move", function(coords) {
       return players.forEach(function(player) {
-        if (player.socket !== socket) {
-          player.socket.emit('receiveMove', coords);
+        if (player.socket !== socket.id) {
+          socket.broadcast.emit('receiveMove', coords);
         }
         if (player.socket === socket) {
           player.x += coords.dx;
