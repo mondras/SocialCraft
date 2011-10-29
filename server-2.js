@@ -99,18 +99,19 @@
         }
       });
       socket.broadcast.emit('createNewPlayer', player);
+      socket.emit('createExistingPlayers', players);
       return console.log("Finished getting the player into the server");
     });
     return socket.on("move", function(coords) {
       socket.broadcast.emit('receiveMove', coords);
       return players.forEach(function(player) {
         if (player.socket === socket.id) {
-          player.x += coords.dx;
-          player.y += coords.dy;
-          player.z += coords.dz;
-          player.rx += coords.drx;
-          player.rz += coords.drz;
-          return player.ry += coords.dry;
+          player.x = coords.dx;
+          player.y = coords.dy;
+          player.z = coords.dz;
+          player.rx = coords.drx;
+          player.rz = coords.drz;
+          return player.ry = coords.dry;
         }
       });
     });
