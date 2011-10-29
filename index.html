@@ -446,7 +446,7 @@
 
                                 //  player
                                 var geometryPlayer = new THREE.CubeGeometry( 20, 20, 20 );
-				var material = new THREE.MeshLambertMaterial( { color: 0xffaaff, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture( 'textures/lol.jpg' ) } );
+				var material = new THREE.MeshLambertMaterial( { color: 0xffaaff, shading: THREE.FlatShading, map: THREE.ImageUtils.loadTexture( 'http://localhost:8080/textures/lol.jpg' ) } );
                                 
                                 player = new THREE.Mesh( geometryPlayer, material );
 				player.overdraw = true;

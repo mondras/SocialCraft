@@ -95,19 +95,15 @@
       console.log("Updated list:");
       players.forEach(function(p) {
         if (typeof p.id === "string") {
-          console.log(p.id);
-        }
-        if (p.socket !== socket.id) {
-          return socket.broadcast.emit('createNewPlayer', player);
+          return console.log(p.id);
         }
       });
+      socket.broadcast.emit('createNewPlayer', player);
       return console.log("Finished getting the player into the server");
     });
     return socket.on("move", function(coords) {
+      socket.broadcast.emit('receiveMove', coords);
       return players.forEach(function(player) {
-        if (player.socket !== socket.id) {
-          socket.broadcast.emit('receiveMove', coords);
-        }
         if (player.socket === socket.id) {
           player.x += coords.dx;
           player.y += coords.dy;

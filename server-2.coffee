@@ -76,13 +76,13 @@ io.sockets.on "connection", (socket) ->
 
     players.forEach (p) ->
         console.log p.id if typeof p.id is "string"
-        socket.broadcast.emit('createNewPlayer',player) unless p.socket is socket.id
+    socket.broadcast.emit('createNewPlayer',player) 
     console.log("Finished getting the player into the server");
     
          
   socket.on "move", (coords) ->
+    socket.broadcast.emit('receiveMove',coords) 
     players.forEach (player) ->
-        socket.broadcast.emit('receiveMove',coords) unless player.socket is socket.id
         if player.socket is socket.id
             player.x    += coords.dx
             player.y    += coords.dy
